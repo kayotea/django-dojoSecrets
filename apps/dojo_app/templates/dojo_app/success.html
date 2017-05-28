@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Dojo Secrets: Success</title>
+        {%load staticfiles %}
+        <link rel="stylesheet" href="{% static 'dojo_app/css/style.css' %}" charset="utf-8">
+    </head>
+    <body>
+        <div id="wrapper">
+            <h2>Success! Welcome, {{user.first_name}}</h2>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="error">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <form action="/post/secret" method="post" class="form">
+            {% csrf_token %}
+                <textarea rows="5" cols="50" name="secret">Your secret here...</textarea>
+                <input type="submit" value="Post">
+            </form>
+            <p><a href="/popular">Most popular secrets...</a></p>
+            <h1>Recent Posts...</h1>
+            <!--Loops through 5 most recent secrets-->
+            {% for secret in secrets|slice:":5" %}
+                <!--Print the secret inside secret tuple-->
+                <p>{{ secret.0.secret }}  
+                    <!--Print the time change inside secret tuple-->
+                    (Posted
+                    <!--If days have passed-->
+                    {% if secret.1.days %}
+                        {{secret.1.days}} days
+                    <!--If hours have passed-->
+                    {% elif secret.1.hours %}
+                        {{secret.1.hours}} hours, 
+                        {{secret.1.minutes}} minutes
+                    <!--If minutes have passed-->
+                    {% elif secret.1.minutes %}
+                        {{secret.1.minutes}} minutes
+                    <!--If seconds have passed-->
+                    {% else %}
+                        {{secret.1.seconds}} seconds
+                    {% endif %} ago)
+                    <span class="i">likes: {{secret.2.0}}</span>,
+                <!--If logged in user is not writer of secret-->
+                <!--And if user has not yet liked this secret-->
+                {% if secret.0.user.id != user.id and not secret.2.1 %}
+                    <a href="/like/post/{{secret.0.id}}">Like</a>
+                <!--If user has already liked this secret-->
+                {% elif secret.2.1 %}
+                    <span class="b">You liked this</span>
+                {% endif %}
+                <!--If user has written this secret-->
+                {% if secret.3 %}
+                    <span class="b">You wrote this</span>
+                    <a href="/delete/{{secret.0.id}}">Delete</a>
+                {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+    </body>
+</html>

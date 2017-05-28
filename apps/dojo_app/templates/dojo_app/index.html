@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Dojo Secrets: Login and Registration</title>
+        {%load staticfiles %}
+        <link rel="stylesheet" href="{% static 'dojo_app/css/style.css' %}" charset="utf-8">
+    </head>
+    <body>
+        <div id="wrapper">
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="error">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+            <h3>Register:</h3>
+            <form action="/register/process" method="post" class="form">
+            {% csrf_token %}
+                <label for="first_name">First Name:</label>
+                <input type="text" name="first_name"><br>
+                <label for="last_name">Last Name:</label>
+                <input type="text" name="last_name"><br>
+                <label for="email">Email:</label>
+                <input type="text" name="email"><br>
+                <label for="password">Password:</label>
+                <input type="text" name="password"><br>
+                <label for="confirm_password">Confirm Password:</label>
+                <input type="text" name="confirm_password"><br><br>
+                <input type="submit" value="Register">
+            </form>
+            <h3>Login:</h3>
+            <form action="/login" method="post" class="form">
+            {% csrf_token %}
+                <label for="email">Email:</label>
+                <input type="text" name="email"><br>
+                <label for="password">Password:</label>
+                <input type="text" name="password"><br><br>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </body>
+</html>
